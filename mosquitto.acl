@@ -5,5 +5,8 @@ topic read $SYS/#
 user roger
 topic foo/bar
 
+user jane
+topic owntracks/jjolie/phone
+
 # This affects all clients.
 pattern write $SYS/broker/connection/%c/state
