@@ -11,7 +11,7 @@ mkdir -p /owntracks/recorder/store
 mkdir -p /owntracks/recorder/store/last
 
 chown -R owntracks:owntracks /owntracks/recorder
-/usr/local/sbin/ot-recorder --initialize
+/usr/sbin/ot-recorder --initialize
 
 mkdir -p /owntracks/certs
 
