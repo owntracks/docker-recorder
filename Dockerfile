@@ -2,7 +2,7 @@ FROM ubuntu:latest
 LABEL version="0.4" description="Mosquitto and OwnTracks Recorder"
 MAINTAINER Jan-Piet Mens <jpmens@gmail.com>
 
-RUN apt-get install -y wget && \
+RUN apt-get update && apt-get install -y wget && \
 	wget -q -O /tmp/owntracks.gpg.key http://repo.owntracks.org/repo.owntracks.org.gpg.key && \
 	apt-key add /tmp/owntracks.gpg.key
 RUN apt-get install -y software-properties-common && \
