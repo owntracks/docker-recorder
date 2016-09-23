@@ -6,12 +6,12 @@ RUN apt-get update && apt-get install -y wget && \
 	wget -q -O /tmp/owntracks.gpg.key http://repo.owntracks.org/repo.owntracks.org.gpg.key && \
 	apt-key add /tmp/owntracks.gpg.key
 RUN apt-get install -y software-properties-common && \
-	add-apt-repository ppa:chris-lea/libsodium && \
 	apt-add-repository ppa:mosquitto-dev/mosquitto-ppa && \
 	apt-add-repository 'deb http://repo.owntracks.org/debian jessie main' && \
 	apt-get update && \
 	apt-get install -y \
 		libmosquitto1 \
+		libsodium18 \
 		libcurl3 \
 		liblua5.2-0 \
 		mosquitto \
