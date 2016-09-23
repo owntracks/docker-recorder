@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y wget && \
 RUN apt-get install -y software-properties-common && \
 	apt-add-repository ppa:mosquitto-dev/mosquitto-ppa && \
 	apt-add-repository 'deb http://repo.owntracks.org/debian jessie main' && \
-	add-apt-repository --yes ppa:xuzhen666/dnscrypt \
+	add-apt-repository --yes ppa:xuzhen666/dnscrypt && \
 	apt-get update && \
 	apt-get install -y \
 		libmosquitto1 \
