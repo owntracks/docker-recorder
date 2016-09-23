@@ -5,10 +5,10 @@ MAINTAINER Jan-Piet Mens <jpmens@gmail.com>
 RUN apt-get update && apt-get install -y wget && \
 	wget -q -O /tmp/owntracks.gpg.key http://repo.owntracks.org/repo.owntracks.org.gpg.key && \
 	apt-key add /tmp/owntracks.gpg.key
-RUN apt-get install -y software-properties-common && \
+RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list && \
+	apt-get install -y software-properties-common && \
 	apt-add-repository ppa:mosquitto-dev/mosquitto-ppa && \
 	apt-add-repository 'deb http://repo.owntracks.org/debian jessie main' && \
-	add-apt-repository --yes ppa:xuzhen666/dnscrypt && \
 	apt-get update && \
 	apt-get install -y \
 		libmosquitto1 \
