@@ -2,6 +2,13 @@ FROM ubuntu:latest
 LABEL version="0.4" description="Mosquitto and OwnTracks Recorder"
 MAINTAINER Jan-Piet Mens <jpmens@gmail.com>
 
+# libsodium
+RUN add-apt-repository --yes ppa:xuzhen666/dnscrypt \
+    && apt-get update \
+    && apt-get --assume-yes install libsodium13 libsodium-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 RUN apt-get update && apt-get install -y wget && \
 	wget -q -O /tmp/owntracks.gpg.key http://repo.owntracks.org/repo.owntracks.org.gpg.key && \
 	apt-key add /tmp/owntracks.gpg.key
