@@ -5,8 +5,8 @@ MAINTAINER Jan-Piet Mens <jpmens@gmail.com>
 RUN apt-get update && apt-get install -y wget && \
 	wget -q -O /tmp/owntracks.gpg.key http://repo.owntracks.org/repo.owntracks.org.gpg.key && \
 	apt-key add /tmp/owntracks.gpg.key
-RUN echo "deb http://archive.ubuntu.com/ubuntu xenial main universe" > /etc/apt/sources.list && \
-	apt-get install -y software-properties-common && \
+RUN apt-get install -y software-properties-common && \
+	add-apt-repository ppa:chris-lea/libsodium && \
 	apt-add-repository ppa:mosquitto-dev/mosquitto-ppa && \
 	apt-add-repository 'deb http://repo.owntracks.org/debian jessie main' && \
 	apt-get update && \
