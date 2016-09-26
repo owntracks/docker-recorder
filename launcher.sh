@@ -34,7 +34,7 @@ fi
 
 # --- for Mosquitto's persistence
 mkdir -p /owntracks/mosquitto
-chown mosquitto:mosquitto /owntracks/mosquitto
+chown mosquitto:nogroup /owntracks/mosquitto
 
 # Prime Mosquitto's configuration in volume if it doesn't yet exist there.
 # Mosquitto will launch with that, allowing the admin to modify config
