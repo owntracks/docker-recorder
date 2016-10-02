@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM armhf/debian:jessie
 LABEL version="0.4" description="Mosquitto and OwnTracks Recorder"
 MAINTAINER Jan-Piet Mens <jpmens@gmail.com>
 
