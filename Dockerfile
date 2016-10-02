@@ -2,10 +2,11 @@ FROM debian:jessie
 LABEL version="0.4" description="Mosquitto and OwnTracks Recorder"
 MAINTAINER Jan-Piet Mens <jpmens@gmail.com>
 
-RUN apt-get update && apt-get install -y wget && \
-	wget -q -O /tmp/owntracks.gpg.key http://repo.owntracks.org/repo.owntracks.org.gpg.key && \
-	apt-key add /tmp/owntracks.gpg.key
-RUN apt-get install -y software-properties-common && \
+ADD http://repo.owntracks.org/repo.owntracks.org.gpg.key /tmp/owntracks.gpg.key
+
+RUN	apt-key add /tmp/owntracks.gpg.key && \
+	apt-get update && \
+	apt-get install -y software-properties-common && \
 	apt-add-repository 'deb http://repo.owntracks.org/debian jessie main' && \
 	apt-get update && \
 	apt-get install -y \
@@ -23,15 +24,19 @@ RUN apt-get install -y software-properties-common && \
 
 # data volume
 VOLUME /owntracks
+
 COPY ot-recorder.default /etc/default/ot-recorder
-RUN mkdir -p /var/log/supervisor && \
-	mkdir -p -m 775 /owntracks/recorder/store && \
-	chown -R owntracks:owntracks /owntracks
+
 COPY launcher.sh /usr/local/sbin/launcher.sh
 COPY generate-CA.sh /usr/local/sbin/generate-CA.sh
-RUN chmod 755 /usr/local/sbin/launcher.sh /usr/local/sbin/generate-CA.sh
+
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY mosquitto.conf mosquitto.acl /etc/mosquitto/
+
+RUN mkdir -p /var/log/supervisor && \
+	mkdir -p -m 775 /owntracks/recorder/store && \
+	chown -R owntracks:owntracks /owntracks && \
+	chmod 755 /usr/local/sbin/launcher.sh /usr/local/sbin/generate-CA.sh
 
 EXPOSE 1883 8883 8083
 CMD ["/usr/local/sbin/launcher.sh"]
