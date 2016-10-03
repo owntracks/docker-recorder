@@ -6,7 +6,7 @@ ADD http://repo.owntracks.org/repo.owntracks.org.gpg.key /tmp/owntracks.gpg.key
 
 RUN	apt-key add /tmp/owntracks.gpg.key && \
 	apt-get update && \
-	apt-get install -y software-properties-common && \
+	apt-get install -y software-properties-common net-tools && \
 	apt-add-repository 'deb http://repo.owntracks.org/debian jessie main' && \
 	apt-get update && \
 	apt-get install -y \
