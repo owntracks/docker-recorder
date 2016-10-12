@@ -18,7 +18,7 @@ RUN	apt-key add /tmp/owntracks.gpg.key && \
 		mosquitto-clients \
 		supervisor \
 		ot-recorder \
-		curl
+		curl \
 		&& \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/*
