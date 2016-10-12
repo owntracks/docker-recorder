@@ -40,7 +40,7 @@ HEALTHCHECK CMD /usr/local/sbin/recorder-health.sh
 RUN mkdir -p /var/log/supervisor && \
 	mkdir -p -m 775 /owntracks/recorder/store && \
 	chown -R owntracks:owntracks /owntracks && \
-	chmod 755 /usr/local/sbin/launcher.sh /usr/local/sbin/generate-CA.sh
+	chmod 755 /usr/local/sbin/launcher.sh /usr/local/sbin/generate-CA.sh /usr/local/sbin/recorder-health.sh
 
 EXPOSE 1883 8883 8083
 CMD ["/usr/local/sbin/launcher.sh"]
