@@ -18,6 +18,7 @@ RUN	apt-key add /tmp/owntracks.gpg.key && \
 		mosquitto-clients \
 		supervisor \
 		ot-recorder \
+		curl
 		&& \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/*
@@ -32,6 +33,9 @@ COPY generate-CA.sh /usr/local/sbin/generate-CA.sh
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY mosquitto.conf mosquitto.acl /etc/mosquitto/
+
+COPY recorder-health.sh /usr/local/sbin/recorder-health.sh
+HEALTHCHECK CMD /usr/local/sbin/recorder-health.sh
 
 RUN mkdir -p /var/log/supervisor && \
 	mkdir -p -m 775 /owntracks/recorder/store && \
