@@ -5,8 +5,11 @@ MAINTAINER Jan-Piet Mens <jpmens@gmail.com>
 RUN apt-get update && apt-get install -y wget && \
 	wget -q -O /tmp/owntracks.gpg.key http://repo.owntracks.org/repo.owntracks.org.gpg.key && \
 	apt-key add /tmp/owntracks.gpg.key
+RUN wget -q -O /tmp/mosquitto.gpg.key http://repo.mosquitto.org/debian/mosquitto-repo.gpg.key && \
+    apt-key add /tmp/mosquitto.gpg.key
 RUN apt-get install -y software-properties-common && \
 	apt-add-repository 'deb http://repo.owntracks.org/debian jessie main' && \
+	apt-add-repository 'deb http://repo.mosquitto.org/debian jessie main' && \
 	apt-get update && \
 	apt-get install -y \
 		libmosquitto1 \
