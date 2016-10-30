@@ -6,11 +6,11 @@ ADD http://repo.owntracks.org/repo.owntracks.org.gpg.key /tmp/owntracks.gpg.key
 ADD http://repo.mosquitto.org/debian/mosquitto-repo.gpg.key /tmp/mosquitto.gpg.key
 
 RUN	apt-key add /tmp/owntracks.gpg.key && \
-    apt-key add /tmp/mosquitto.gpg.key && \
+	apt-key add /tmp/mosquitto.gpg.key && \
 	apt-get update && \
 	apt-get install -y software-properties-common net-tools && \
 	apt-add-repository 'deb http://repo.owntracks.org/debian jessie main' && \
-    apt-add-repository 'deb http://repo.mosquitto.org/debian jessie main' && \
+	apt-add-repository 'deb http://repo.mosquitto.org/debian jessie main' && \
 	apt-get update && \
 	apt-get install -y \
 		libmosquitto1 \
