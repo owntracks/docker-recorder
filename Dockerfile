@@ -1,6 +1,6 @@
 FROM debian:jessie
 LABEL version="0.4" description="Mosquitto and OwnTracks Recorder"
-MAINTAINER Jan-Piet Mens <jpmens@gmail.com>
+LABEL authors="Jan-Piet Mens <jpmens@gmail.com>, Giovanni Angoli <juzam76@gmail.com>"
 
 ADD http://repo.owntracks.org/repo.owntracks.org.gpg.key /tmp/owntracks.gpg.key
 ADD http://repo.mosquitto.org/debian/mosquitto-repo.gpg.key /tmp/mosquitto.gpg.key
