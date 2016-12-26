@@ -47,4 +47,12 @@ if [ ! -f /owntracks/mosquitto/mosquitto.acl ]; then
 	cp /etc/mosquitto/mosquitto.acl /owntracks/mosquitto/mosquitto.acl
 fi
 
+# Put ot-recorder defaults in volume
+if [ ! -f /owntracks/etc/default/ot-recorder ]; then
+    mkdir -p /owntracks/etc/default/
+	mv /etc/default/ot-recorder /owntracks/etc/default/ot-recorder
+fi
+# copy ot-recorder defaults back to /etc/default/
+cp /owntracks/etc/default/ot-recorder /etc/default/ot-recorder
+
 exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
