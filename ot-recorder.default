@@ -4,3 +4,4 @@
 # and its associated utilities to override compiled-in defaults.
 
 OTR_STORAGEDIR = "/owntracks/recorder/store"
+OTR_TOPICS = "owntracks/#"
