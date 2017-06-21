@@ -13,7 +13,7 @@ RUN	apt-get update && \
 	apt-get update && \
 	apt-get install -y \
 		libmosquitto1 \
-		libsodium13 \
+		libsodium18 \
 		libcurl3 \
 		liblua5.2-0 \
 		mosquitto \
