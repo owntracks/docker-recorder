@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM debian:stretch
 LABEL version="0.4" description="Mosquitto and OwnTracks Recorder"
 LABEL authors="Jan-Piet Mens <jpmens@gmail.com>, Giovanni Angoli <juzam76@gmail.com>"
 
