@@ -1,48 +1,36 @@
-FROM debian:stretch
-LABEL version="0.4" description="Mosquitto and OwnTracks Recorder"
-LABEL authors="Jan-Piet Mens <jpmens@gmail.com>, Giovanni Angoli <juzam76@gmail.com>"
+FROM alpine
+LABEL version="1.0" description="OwnTracks Recorder"
+LABEL authors="Jan-Piet Mens <jpmens@gmail.com>, Giovanni Angoli <juzam76@gmail.com>, Amy Nagle <kabili@zyrenth.com>, Malte Deiseroth <mdeiseroth88@gmail.com>"
+MAINTAINER Malte Deiseroth <mdeiseroth88@gmail.com>
 
-ADD http://repo.owntracks.org/repo.owntracks.org.gpg.key /tmp/owntracks.gpg.key
+COPY entrypoint.sh /entrypoint.sh
+COPY config.mk /config.mk
+COPY recorder.conf /etc/default/recorder.conf
 
-RUN apt-get update && \
-	apt-get install -y gnupg && \
-	apt-key add /tmp/owntracks.gpg.key && \
-	apt-get update && \
-	apt-get install -y software-properties-common net-tools && \
-	apt-add-repository 'deb http://repo.owntracks.org/debian stretch main' && \
-	apt-get update && \
-	apt-get install -y \
-		libmosquitto1 \
-		libsodium18 \
-		libcurl3 \
-		liblua5.2-0 \
-		mosquitto \
-		mosquitto-clients \
-		supervisor \
-		ot-recorder \
-		curl \
-		&& \
-	apt-get clean && \
-	rm -rf /var/lib/apt/lists/*
+ENV VERSION=0.8.0
 
-# data volume
-VOLUME /owntracks
+RUN apk add --no-cache --virtual .build-deps \
+        curl-dev libconfig-dev make \
+        gcc musl-dev mosquitto-dev wget \
+    && apk add --no-cache \
+        libcurl libconfig-dev mosquitto-dev lmdb-dev libsodium-dev lua5.2-dev \
+    && mkdir -p /usr/local/source \
+    && cd /usr/local/source \
+    && wget https://github.com/owntracks/recorder/archive/$VERSION.tar.gz \
+    && tar xzf $VERSION.tar.gz \
+    && cd recorder-$VERSION \
+    && mv /config.mk ./ \
+    && make \
+    && make install \
+    && cd / \
+    && chmod 755 /entrypoint.sh \
+    && rm -rf /usr/local/source \
+    && apk del .build-deps
 
-COPY ot-recorder.default /etc/default/ot-recorder
+VOLUME ["/store", "/config"]
 
-COPY launcher.sh /usr/local/sbin/launcher.sh
-COPY generate-CA.sh /usr/local/sbin/generate-CA.sh
+COPY recorder.conf /config/recorder.conf
 
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY mosquitto.conf mosquitto.acl /etc/mosquitto/
+EXPOSE 8083
 
-COPY recorder-health.sh /usr/local/sbin/recorder-health.sh
-HEALTHCHECK CMD /usr/local/sbin/recorder-health.sh
-
-RUN mkdir -p /var/log/supervisor && \
-	mkdir -p -m 775 /owntracks/recorder/store && \
-	chown -R owntracks:owntracks /owntracks && \
-	chmod 755 /usr/local/sbin/launcher.sh /usr/local/sbin/generate-CA.sh /usr/local/sbin/recorder-health.sh
-
-EXPOSE 1883 8883 8083
-CMD ["/usr/local/sbin/launcher.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
