@@ -13,7 +13,7 @@ RUN apk add --no-cache --virtual .build-deps \
         curl-dev libconfig-dev make \
         gcc musl-dev mosquitto-dev wget \
     && apk add --no-cache \
-        libcurl libconfig-dev mosquitto-dev lmdb-dev libsodium-dev lua5.2-dev openssl-dev \
+        libcurl libconfig-dev mosquitto-dev lmdb-dev libsodium-dev lua5.2-dev \
     && mkdir -p /usr/local/source \
     && cd /usr/local/source \
     && wget https://github.com/owntracks/recorder/archive/$VERSION.tar.gz \
