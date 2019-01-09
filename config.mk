@@ -64,7 +64,7 @@ CONFIGFILE = /config/recorder.conf
 # Optionally specify the path to the Mosquitto libs, include here
 MOSQUITTO_INC = -I/usr/include
 MOSQUITTO_LIB = -L/usr/lib
-MORELIBS = -lssl
+MORELIBS = # -lssl
 
 # If WITH_LUA is configured, specify compilation and linkage flags
 # for Lua either manually or using pkg-config. This may require tweaking,
