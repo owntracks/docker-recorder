@@ -95,6 +95,14 @@ automatic way with docker containers and
 https://github.com/owntracks/recorder#reverse-proxy for Recorder specific
 details.
 
+## Healthcheck
+
+The Recorder container performs a Docker-style HEALTHCHECK on itself by periodically
+running `recorder-health.sh` on itself. This program POSTS a `_type: location` JSON
+message to itself over HTTP to the ping-ping endpoint and verifies via the HTTP API
+whether the message was received.
+
+
 ## Docker compose files
 Save a file with the name `docker-compose.yml` and following content. Run with
 `docker-compose up` from the same folder.
