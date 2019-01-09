@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+
+  otrecorder:
+    image: owntracks/recorder
+    ports:
+      - 8083:8083
+    volumes:
+      - config:/config
+      - store:/store
+    restart: unless-stopped
+    environment:
+      OTR_HOST: mosquitto
+
+  mosquitto:
+    image: eclipse-mosquitto
+    ports:
+      - 1883:1883
+      - 8883:8883
+    volumes:
+      - mosquitto-data:/mosquitto/data
+      - mosquitto-logs:/mosquitto/logs
+      - mosquitto-conf:/mosquitto/config
+    restart: unless-stopped
+
+volumes:
+  store:
+  config:
+  mosquitto-data:
+  mosquitto-logs:
+  mosquitto-conf:

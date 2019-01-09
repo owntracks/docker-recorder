@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+
+  recorder:
+    build:
+      context: .
+    container_name: recorder
+    image: owntracks/recorder
+
+  otrecorder:
+    image: owntracks/recorder
+    ports:
+      - 8083:8083
+    volumes:
+      - config:/config
+      - store:/store
+    restart: unless-stopped
+
+volumes:
+  store:
+  config:
+
