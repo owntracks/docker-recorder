@@ -28,6 +28,8 @@ RUN apk add --no-cache --virtual .build-deps \
     && rm -rf /usr/local/source \
     && chmod 755 /usr/local/sbin/recorder-health.sh \
     && apk del .build-deps
+RUN apk add --no-cache \
+	curl jq
 
 VOLUME ["/store", "/config"]
 

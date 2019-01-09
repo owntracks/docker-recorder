@@ -21,7 +21,7 @@ curl -sSL --data "${location}" "http://${addr}:${port}/pub?u=ping&d=ping" > /dev
 
 # obtain tst of ping/ping's last location
 ret_epoch=$(curl -sSL http://${addr}:${port}/api/0/last --data "user=ping&device=ping" |
-           env python -c 'import sys, json; print json.load(sys.stdin)[0]["tst"];')
+           env jq -r '.[0].tst' )
 
 if [ $epoch -ne $ret_epoch ]; then
        echo PANIC $epoch $ret_epoch
