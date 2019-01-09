@@ -6,6 +6,7 @@ MAINTAINER Malte Deiseroth <mdeiseroth88@gmail.com>
 COPY entrypoint.sh /entrypoint.sh
 COPY config.mk /config.mk
 COPY recorder.conf /etc/default/recorder.conf
+COPY recorder-health.sh /usr/local/sbin/recorder-health.sh
 
 ENV VERSION=0.8.0
 
@@ -25,11 +26,14 @@ RUN apk add --no-cache --virtual .build-deps \
     && cd / \
     && chmod 755 /entrypoint.sh \
     && rm -rf /usr/local/source \
+    && chmod 755 /usr/local/sbin/recorder-health.sh \
     && apk del .build-deps
 
 VOLUME ["/store", "/config"]
 
 COPY recorder.conf /config/recorder.conf
+
+HEALTHCHECK CMD /usr/local/sbin/recorder-health.sh
 
 EXPOSE 8083
 
