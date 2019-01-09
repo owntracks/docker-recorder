@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.com/deisi/docker-ot-recorder.svg?branch=master)](https://travis-ci.com/deisi/docker-ot-recorder)
 
 Dockerfile for the [Recorder](https://github.com/owntracks/recorder) of the
-Owntracks project.
+OwnTracks project.
 
 ## Quickstart
 ```bash
@@ -10,7 +10,7 @@ $ docker volume create recorder_store
 $ docker run -d -p 8083:8083 -v recorder_store:/store -e OTR_HOST=mqtt_broker owntracks/recorder
 ```
 
-Recorder is now accessible at http://localhost:8083
+Recorder is now accessible at `http://localhost:8083`. 
 
 `-p 8083:8083` makes the container reachable at port 8083. `-d` detaches the
 container into the background. The volume `recorder_store` is mounted at
@@ -24,13 +24,20 @@ The Recorder can be configured using two methods, environment variables and
 via the a `recorder.conf` file in the `/config` volume of the container.
 
 ### Environment variables
+
 Can be passed to the container with the `-e` parameter. Example:
+
 ```bash
-$ docker run -d -p 8083:8083 -e OTR_HOST=mqtt_broker -e OTR_PORT=1883 -e OTR_USER=user -e OTR_PASS=pass owntracks/recorder
+$ docker run -d -p 8083:8083 \
+        -e OTR_HOST=mqtt_broker \
+	-e OTR_PORT=1883 \
+	-e OTR_USER=user \
+	-e OTR_PASS=pass \
+	owntracks/recorder
 ```
 
 The complete list of parameters can be found in the [recorder
-documentations](https://github.com/owntracks/recorder/blob/master/README.md#configuration-file)
+documentation](https://github.com/owntracks/recorder/blob/master/README.md#configuration-file).
 
 ### Configuration file
 One can also use a configuration file. The container reads a `recorder.conf`
@@ -43,17 +50,17 @@ $ docker run -d -p 8083:8083 -v recorder_store:/store -v ./config:/config owntra
 ```
 
 Up on starting the recorder, a default `recorder.conf` file will be created if
-none exists. Possible options are documented
-[here](https://github.com/owntracks/recorder/blob/master/README.md#configuration-file**
+none exists. Possible options are documented [here](https://github.com/owntracks/recorder/blob/master/README.md#configuration-file).
 
 **Notes:**
-- `OTR_HOST` is as seen from the container. Thus `localhost` refers to
-the container not the host.
+- The value of `OTR_HOST` is as seen from the container. Thus `localhost` refers to
+the container not the host and should likely not be used.
 - Environment variables, overwrite the `recorder.conf` file options.
-- The shell like style of the`recorder.conf` file needs "" encapsulated
+- The shell like style of the`recorder.conf` file needs `""` encapsulated
 variable values.
 
 ## Storing data
+
 The `/store` volume of the container is used for persistent storage of location
 data. The volume needs to be created explicitly.
 
