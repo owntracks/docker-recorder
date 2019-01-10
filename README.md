@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/owntracks/docker-recorder.svg?branch=master)](https://travis-ci.com/owntracks/docker-recorder)
 
 Dockerfile for the [Recorder](https://github.com/owntracks/recorder) of the
-OwnTracks project.
+OwnTracks project. The image is [owntracks/recorder](https://hub.docker.com/r/owntracks/recorder).
 
 ## Quickstart
 ```bash
@@ -104,7 +104,7 @@ whether the message was received.
 
 
 ## Docker compose files
-Save a file with the name `docker-compose.yml` and following content. Run with
+Save a file with the name [docker-compose.yml](docker-compose.yml) and following content. Run with
 `docker-compose up` from the same folder.
 
 ``` yaml
@@ -127,7 +127,7 @@ volumes:
 
 ```
 
-This `docker-compose.yml` file creates `store` and `config` volumes. It is
+This [docker-compose.yml](docker-compose.yml) file creates `store` and `config` volumes. It is
 possible to edit the `recorder.conf` file in the `config` volume to get the
 system up and running. It is also possible to pass environment variables to the
 docker container via the `environment:` keyword. For details see
@@ -160,9 +160,9 @@ volumes:
 ```
 
 ### With MQTT broker
-If an mqtt broker is needed mosquitto can be used. There are ready to use
-containers available on docker hub. To use `eclipse-mosquitto` add the following
-to you `docker-compose.yml` file.
+
+If you need to set up an MQTT broker, you can easily use, say, Mosquitto. There are ready to use
+containers available on docker hub. To use `eclipse-mosquitto` add something like [the following](docker-compose-mqtt.yml) to your `docker-compose.yml` file.
 
 ``` yaml
 version: '3'
@@ -196,15 +196,11 @@ volumes:
   mosquitto-logs:
   mosquitto-conf:
 ```
-See [here](https://hub.docker.com/_/eclipse-mosquitto) for info on the eclipse-mosquitto image and how to configure.
+See [here](https://hub.docker.com/_/eclipse-mosquitto) for info on the eclipse-mosquitto image and how to configure it.
 
 
-# Notes
-- ~~certificates volume for Recorder and some documentation~~
-- ~~Check if lua5.2-libs is needed~~
-- ~~Check if eclipse-mosquitto is working~~
-- Maybe put the most common mosquitto options
-- Maybe add letsencrypt
-- ~~Add some defaults so mosquitto and owntracks work right away~~
-- Find out how it works with automatic build tags on travis and automatic docker hub uploading
+# Possible enhancements
+
+- Maybe put the most common Mosquitto options in the section which uses an MQTT broker in the docker-compose file
+- Possibly add support for Let's Encrypt
 
