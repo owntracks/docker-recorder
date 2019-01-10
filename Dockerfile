@@ -8,7 +8,7 @@ COPY config.mk /config.mk
 COPY recorder.conf /etc/default/recorder.conf
 COPY recorder-health.sh /usr/local/sbin/recorder-health.sh
 
-ENV VERSION=0.8.0
+ENV VERSION=0.8.1
 
 RUN apk add --no-cache --virtual .build-deps \
         curl-dev libconfig-dev make \

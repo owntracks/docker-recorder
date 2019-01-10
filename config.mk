@@ -54,6 +54,8 @@ DOCROOT = /htdocs
 
 GHASHPREC = 7
 
+GEOCODE_TIMEOUT = 4000
+
 # Should the JSON emitted by recorder be indented? (i.e. beautified)
 # yes or no
 JSON_INDENT ?= no
