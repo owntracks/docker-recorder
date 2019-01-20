@@ -150,9 +150,9 @@ services:
       - store:/store
     restart: unless-stopped
     environment:
-      - OTR_HOST: "mqtt_broker"
-      - OTR_USER: "user"
-      - OTR_PASS: "pass"
+      - OTR_HOST = "mqtt_broker"
+      - OTR_USER = "user"
+      - OTR_PASS = "pass"
 
 volumes:
   store:
