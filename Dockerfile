@@ -3,12 +3,15 @@ LABEL version="1.0" description="OwnTracks Recorder"
 LABEL authors="Jan-Piet Mens <jpmens@gmail.com>, Giovanni Angoli <juzam76@gmail.com>, Amy Nagle <kabili@zyrenth.com>, Malte Deiseroth <mdeiseroth88@gmail.com>"
 MAINTAINER Malte Deiseroth <mdeiseroth88@gmail.com>
 
+# build with `docker build --build-arg recorder_version=x.y.z '
+ARG recorder_version=0.8.3
+
 COPY entrypoint.sh /entrypoint.sh
 COPY config.mk /config.mk
 COPY recorder.conf /etc/default/recorder.conf
 COPY recorder-health.sh /usr/local/sbin/recorder-health.sh
 
-ENV VERSION=0.8.3
+ENV VERSION=$recorder_version
 
 RUN apk add --no-cache --virtual .build-deps \
         curl-dev libconfig-dev make \

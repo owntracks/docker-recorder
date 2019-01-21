@@ -5,6 +5,8 @@ services:
   recorder:
     build:
       context: .
+      args:
+         recorder_version: 0.8.3
     container_name: recorder
     image: owntracks/recorder
 
