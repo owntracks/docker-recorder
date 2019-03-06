@@ -6,4 +6,4 @@ if [ ! -f /config/recorder.conf ]; then
 fi
 
 ot-recorder --initialize
-ot-recorder
+ot-recorder "$@"
