@@ -12,12 +12,15 @@ COPY recorder.conf /etc/default/recorder.conf
 COPY recorder-health.sh /usr/local/sbin/recorder-health.sh
 
 ENV VERSION=$recorder_version
+ENV EUID=9999
 
 RUN apk add --no-cache --virtual .build-deps \
         curl-dev libconfig-dev make \
-        gcc musl-dev mosquitto-dev wget \
+        gcc musl-dev mosquitto-dev shadow wget \
     && apk add --no-cache \
         libcurl libconfig-dev mosquitto-dev lmdb-dev libsodium-dev lua5.2-dev \
+    && groupadd -g $EUID appuser \
+    && useradd -r -u $EUID -s "/bin/sh" -g appuser appuser \
     && mkdir -p /usr/local/source \
     && cd /usr/local/source \
     && wget https://github.com/owntracks/recorder/archive/$VERSION.tar.gz \
