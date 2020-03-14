@@ -1,0 +1,5 @@
+
+- FIX: comment out CAPATH in recorder.conf (#339)
+- UPD: update entrypoint to allow passing arguments to ot-recorder (#29)
+- FIX: recorder.conf erroneously contain configured cert/key files (#27)
+- NEW: allow building with Recorder version specified at build time
