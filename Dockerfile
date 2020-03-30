@@ -41,7 +41,11 @@ VOLUME ["/store", "/config"]
 
 COPY recorder.conf /config/recorder.conf
 
-HEALTHCHECK CMD /usr/local/sbin/recorder-health.sh
+# If you absolutely need health-checking, enable the option below.  Keep in
+# mind that until https://github.com/systemd/systemd/issues/6432 is resolved,
+# using the HEALTHCHECK feature will cause systemd to generate a significant
+# amount of spam in the system logs.
+# HEALTHCHECK CMD /usr/local/sbin/recorder-health.sh
 
 EXPOSE 8083
 
