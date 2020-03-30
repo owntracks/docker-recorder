@@ -1,5 +1,4 @@
-
-
+- UPD: Remove healthcheck feature (systemd log spam). (#35)
 - UPD: run ot-recorder as non-privileged user (#33)
 - FIX: comment out CAPATH in recorder.conf (#339)
 - UPD: update entrypoint to allow passing arguments to ot-recorder (#29)
