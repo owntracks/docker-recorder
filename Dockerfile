@@ -40,6 +40,7 @@ RUN apk add --no-cache \
 VOLUME ["/store", "/config"]
 
 COPY recorder.conf /config/recorder.conf
+COPY JSON.lua /config/JSON.lua
 
 # If you absolutely need health-checking, enable the option below.  Keep in
 # mind that until https://github.com/systemd/systemd/issues/6432 is resolved,

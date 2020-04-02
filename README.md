@@ -204,3 +204,6 @@ See [here](https://hub.docker.com/_/eclipse-mosquitto) for info on the eclipse-m
 - Maybe put the most common Mosquitto options in the section which uses an MQTT broker in the docker-compose file
 - Possibly add support for Let's Encrypt
 
+## Credits
+
+- [JSON.lua](http://regex.info/blog/lua/json), by Jeffrey Friedl. [LICENSE](https://creativecommons.org/licenses/by/3.0/)
