@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: otr-store
+  namespace: otrecorder
+spec:
+  # update this to match your own or preferred kubernetes storage
+  storageClassName: nfs
+  accessModes:
+      # even if you have NFS, don't be tempted to use ReadWriteMany!
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "2G"

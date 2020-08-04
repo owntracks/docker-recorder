@@ -1,0 +1,21 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: otrecorder
+  name: otr-gui-api-frontend
+  namespace: otrecorder
+spec:
+  type: ClusterIP
+  ports:
+  - name: gui-api
+    port: 8083
+    protocol: TCP
+    targetPort: gui-api
+  - name: gui-frontend
+    port: 8080
+    protocol: TCP
+    targetPort: gui-frontend
+  selector:
+    app.kubernetes.io/name: otrecorder

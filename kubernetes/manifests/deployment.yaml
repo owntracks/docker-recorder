@@ -1,0 +1,138 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: otrecorder
+  name: otrecorder
+  namespace: otrecorder
+spec:
+  selector:
+    matchLabels:
+      app: otrecorder
+  # don't scale up, that would not work
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: otrecorder
+        app: otrecorder
+
+    spec:
+
+      containers:
+      - image: owntracks/recorder:latest
+        imagePullPolicy: Always
+        command:
+        - /entrypoint.sh
+        - --debug
+        livenessProbe:
+          exec:
+            command:
+            - /usr/local/sbin/recorder-health.sh
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/0/version
+            port: 8083
+          initialDelaySeconds: 3
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        name: otrecorder
+        ports:
+        - containerPort: 8083
+          name: gui-api
+        env:
+        - name: OTR_HOST
+          value: broker.home.vanginderachter.be
+        - name: OTR_PORT
+          value: "8883"
+        - name: OTR_USER
+          valueFrom:
+            secretKeyRef:
+              name: broker-user
+              key: username
+        - name: OTR_PASS
+          valueFrom:
+            secretKeyRef:
+              name: broker-user
+              key: password
+        - name: OTR_STORAGEDIR
+          value: /store
+        #- name: OTR_BROWSERAPIKEY
+        #  value:
+        - name: OTR_CAFILE
+          value: /config/le-all.pem
+        #- name: OTR_CAPATH
+        #  value:
+        #- name: OTR_CERTFILE
+        #  value:
+        #- name: OTR_KEYFILE
+        #  value:
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+        volumeMounts:
+        - name: otr-store
+          mountPath: /store
+          subPath: store
+        - name: otr-store
+          mountPath: /config
+          subPath: config
+
+      - image: owntracks/frontend:latest
+        imagePullPolicy: Always
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 15
+          timeoutSeconds: 5
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /api/0/version
+            port: 8080
+          initialDelaySeconds: 3
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 5
+        name: ot-frontend
+        env:
+        - name: LISTEN_PORT
+          value: "8080"
+        - name: SERVER_HOST
+          value: localhost
+        - name: SERVER_PORT
+          value: "8083"
+        ports:
+        - containerPort: 8080
+          name: gui-frontend
+        #securityContext:
+        #  runAsUser: 9999
+        resources:
+          limits:
+            cpu: 100m
+        # also uncomment the respective comfigMap if you need this
+        volumeMounts: []
+        #- name: otf-config
+        #  mountpath: /usr/share/nginx/html/config/
+
+      volumes:
+      - name: otr-store
+        persistentVolumeClaim:
+          claimName: otr-store
+      - name: otr-config
+        configMap:
+          name: otr-config
+      #- name: otf-config
+      #  configMap:
+      #    name: otfecord-config

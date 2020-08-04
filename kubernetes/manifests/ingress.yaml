@@ -1,0 +1,50 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    # update this to match your cert-manager certificate issuer
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  name: ot-recorder
+  namespace: otrecorder
+spec:
+  rules:
+          # replace this by your own custom domain
+  - host: otrecorder.yourown.domain
+    http:
+      paths:
+      - backend:
+          serviceName: otr-gui-api-frontend
+          servicePort: 8083
+        path: /
+  tls:
+  - hosts:
+      # must match the previous configured custom domain as host:
+    - otrecorder.yourown.domain
+    secretName: otrecorder.yourown.domain-tls
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    # update this to match your cert-manager certificate issuer
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  name: ot-frontend
+  namespace: otrecorder
+spec:
+  rules:
+          # replace this by your own custom domain
+  - host: owntracks.yourown.domain
+    http:
+      paths:
+      - backend:
+          serviceName: otr-gui-api-frontend
+          servicePort: 8080
+        path: /
+  tls:
+  - hosts:
+      # must match the previous configured custom domain as host:
+    - owntracks.yourown.domain
+    secretName: owntracks.yourown.domain-tls
