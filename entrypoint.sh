@@ -4,7 +4,7 @@
 # and re-run this script as appuser.
 if [[ $(id -u) -eq 0 ]]; then
   chown -R appuser:appuser /store /config
-  exec su -c "$0" appuser
+  exec su appuser -- "$0" "$@"
 fi
 
 # Load Default recorder.conf if not available
