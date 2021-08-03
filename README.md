@@ -198,11 +198,150 @@ volumes:
 ```
 See [here](https://hub.docker.com/_/eclipse-mosquitto) for info on the eclipse-mosquitto image and how to configure it.
 
+### All in one solution with reverse proxy and Let's Encrypt
+
+There are some caveats people seem to step into:
+
+1. mosquitto starts only if the cert files referenced in the configuration are
+   accessible. Therefore for a successful retrieval from Let's encrypt by the
+   ACME companion those lines in the configuration have to be commented out.
+   In order to test things start unencrypted first. 
+
+2. The example documentation to create a password include `-c` as command line
+   switch. Be sure only to use this if you **want** to overwrite that password
+   file.
+
+3. In order to make ot-recorder talk SSL & accept Let's encrypt certificates a
+   kind of concatenated
+   [le-ca.pem](https://gist.github.com/jpmens/211dbe7904a0efd40e2e590066582ae5)
+   is needed. A [thread](https://github.com/owntracks/recorder/issues/193) in
+   an issue is discussing this in detail. In the example below this file is
+   downloaded as `ca.pem`. 
+
+4. nginx-proxy allows basic auth. For that one needs to put a file name after
+   the virtual host, e.g. `owntrack.domain.com` in the **folder**
+   `/etc/nginx/htpasswd`
+
+``` yaml 
+
+version: '2'
+
+services:
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy:alpine
+    container_name: nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./proxy/conf.d:/etc/nginx/conf.d
+      - ./proxy/proxy.conf:/etc/nginx/proxy.conf
+      - ./proxy/vhost.d:/etc/nginx/vhost.d
+      - ./proxy/html:/usr/share/nginx/html
+      - ./proxy/certs:/etc/nginx/certs:ro
+      - ./proxy/htpasswd:/etc/nginx/htpasswd:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - acme:/etc/acme.sh
+    networks:
+      - proxy-tier
+
+  letsencrypt-nginx-proxy-companion:
+    image: nginxproxy/acme-companion
+    container_name: letsencrypt-companion
+    depends_on: [nginx]
+    volumes_from:
+      - nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./proxy/certs:/etc/nginx/certs:rw
+      - acme:/etc/acme.sh
+    #environment:
+      #- ACME_CA_URI=https://acme-staging-v02.api.letsencrypt.org/directory
+      #User above line for testing the setup 
+
+  otrecorder:
+    image: owntracks/recorder
+    restart: unless-stopped
+    environment:
+      - VIRTUAL_HOST=owntracks.domain.com
+      - VIRTUAL_PORT=8083
+      - LETSENCRYPT_HOST=owntracks.domain.com
+      - LETSENCRYPT_EMAIL=joe.doe@domain.com
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+      - OTR_USER="user"
+      - OTR_PASS="password"
+      - OTR_HOST=mqtt.domain.com
+      - OTR_PORT=8883
+      - OTR_CAFILE=/config/ca.pem
+      #content of the file above from https://gist.github.com/jpmens/211dbe7904a0efd40e2e590066582ae5
+      #which is 6 certificates in one file. !!!This turns out to be important!!!
+    volumes:
+      - ./owntracks/config:/config
+      - ./owntracks/store:/store
+      - ./proxy/certs:/etc/letsencrypt/live:ro #probably this line is not needed
+    networks:
+      - proxy-tier
+  
+  mqtt:
+    container_name: mqtt
+    image: eclipse-mosquitto
+    environment:
+      - VIRTUAL_HOST=mqtt.domain.com
+      - LETSENCRYPT_HOST=mqtt.domain.com
+      - LETSENCRYPT_EMAIL=joe.doe@domain.com
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+    ports:
+      - 1883:1883
+      - 8883:8883
+      - 8083:8083
+    volumes:
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/logs:/mosquitto/logs
+      - ./mosquitto/conf:/mosquitto/config
+      - ./mosquitto/conf/passwd:/etc/mosquitto/passwd
+      - ./proxy/certs:/etc/letsencrypt/live:ro
+    restart: unless-stopped
+
+volumes:
+  acme:
+networks:
+  proxy-tier:
+    external:
+      name: nginx-proxy
+```
+a minimal mosquitto.conf which can act as a start:
+
+``` 
+allow_anonymous false
+password_file /etc/mosquitto/passwd
+#use mosquitto_passwd inside container to populate the passwd file
+
+#listener 1883 
+#socket_domain ipv4
+#uncomment 2 lines above for first run so we get LE certificates. 
+#at the same time comment out all lines below. Once you have the certificate
+#stop the unencrypted listener
+
+listener 8883
+certfile /etc/letsencrypt/live/mqtt.domain.com/cert.pem
+cafile /etc/letsencrypt/live/mqtt.domain.com/chain.pem
+keyfile /etc/letsencrypt/live/mqtt.domain.com/key.pem
+
+listener 8083
+protocol websockets
+certfile /etc/letsencrypt/live/mqtt.domain.com/cert.pem
+cafile /etc/letsencrypt/live/mqtt.domain.com/chain.pem
+keyfile /etc/letsencrypt/live/mqtt.domain.com/key.pem 
+```
+
 
 # Possible enhancements
 
 - Maybe put the most common Mosquitto options in the section which uses an MQTT broker in the docker-compose file
-- Possibly add support for Let's Encrypt
 
 ## Credits
 
