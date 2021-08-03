@@ -1,0 +1,88 @@
+version: '2'
+
+services:
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy:alpine
+    container_name: nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./proxy/conf.d:/etc/nginx/conf.d
+      - ./proxy/proxy.conf:/etc/nginx/proxy.conf
+      - ./proxy/vhost.d:/etc/nginx/vhost.d
+      - ./proxy/html:/usr/share/nginx/html
+      - ./proxy/certs:/etc/nginx/certs:ro
+      - ./proxy/htpasswd:/etc/nginx/htpasswd:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - acme:/etc/acme.sh
+    networks:
+      - proxy-tier
+
+  letsencrypt-nginx-proxy-companion:
+    image: nginxproxy/acme-companion
+    container_name: letsencrypt-companion
+    depends_on: [nginx]
+    volumes_from:
+      - nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./proxy/certs:/etc/nginx/certs:rw
+      - acme:/etc/acme.sh
+    #environment:
+      #- ACME_CA_URI=https://acme-staging-v02.api.letsencrypt.org/directory
+      #User above line for testing the setup 
+
+  otrecorder:
+    image: owntracks/recorder
+    restart: unless-stopped
+    environment:
+      - VIRTUAL_HOST=owntracks.domain.com
+      - VIRTUAL_PORT=8083
+      - LETSENCRYPT_HOST=owntracks.domain.com
+      - LETSENCRYPT_EMAIL=joe.doe@domain.com
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+      - OTR_USER="user"
+      - OTR_PASS="password"
+      - OTR_HOST=mqtt.domain.com
+      - OTR_PORT=8883
+      - OTR_CAFILE=/config/ca.pem
+      #content of the file above from https://gist.github.com/jpmens/211dbe7904a0efd40e2e590066582ae5
+      #which is 6 certificates in one file. !!!This turns out to be important!!!
+    volumes:
+      - ./owntracks/config:/config
+      - ./owntracks/store:/store
+      - ./proxy/certs:/etc/letsencrypt/live:ro #probably this line is not needed
+    networks:
+      - proxy-tier
+  
+  mqtt:
+    container_name: mqtt
+    image: eclipse-mosquitto
+    environment:
+      - VIRTUAL_HOST=mqtt.domain.com
+      - LETSENCRYPT_HOST=mqtt.domain.com
+      - LETSENCRYPT_EMAIL=joe.doe@gmail.com
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+    ports:
+      - 1883:1883
+      - 8883:8883
+      - 8083:8083
+    volumes:
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/logs:/mosquitto/logs
+      - ./mosquitto/conf:/mosquitto/config
+      - ./mosquitto/conf/passwd:/etc/mosquitto/passwd
+      - ./proxy/certs:/etc/letsencrypt/live:ro
+    restart: unless-stopped
+
+volumes:
+  acme:
+networks:
+  proxy-tier:
+    external:
+      name: nginx-proxy
