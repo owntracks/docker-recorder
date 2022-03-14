@@ -4,7 +4,7 @@ LABEL authors="Jan-Piet Mens <jpmens@gmail.com>, Giovanni Angoli <juzam76@gmail.
 MAINTAINER Malte Deiseroth <mdeiseroth88@gmail.com>
 
 # build with `docker build --build-arg recorder_version=x.y.z '
-ARG recorder_version=0.8.7
+ARG recorder_version=0.8.8
 
 COPY entrypoint.sh /entrypoint.sh
 COPY config.mk /config.mk
