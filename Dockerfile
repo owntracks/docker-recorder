@@ -1,53 +1,61 @@
-FROM alpine:3.13 as builder
-LABEL version="1.0" description="OwnTracks Recorder"
-LABEL authors="Jan-Piet Mens <jpmens@gmail.com>, Giovanni Angoli <juzam76@gmail.com>, Amy Nagle <kabili@zyrenth.com>, Malte Deiseroth <mdeiseroth88@gmail.com>"
-MAINTAINER Malte Deiseroth <mdeiseroth88@gmail.com>
+FROM alpine:3.15 AS builder
 
-# build with `docker build --build-arg recorder_version=x.y.z '
-ARG recorder_version=0.8.8
+ARG RECORDER_VERSION=0.8.8
+# ARG RECORDER_VERSION=master
 
-COPY entrypoint.sh /entrypoint.sh
-COPY config.mk /config.mk
-COPY recorder.conf /etc/default/recorder.conf
-COPY recorder-health.sh /usr/local/sbin/recorder-health.sh
-
-ENV VERSION=$recorder_version
-ENV EUID=9999
-
-RUN apk add --no-cache --virtual .build-deps \
-        curl-dev libconfig-dev make \
-        gcc musl-dev mosquitto-dev shadow wget \
-    && apk add --no-cache \
-        libcurl libconfig-dev mosquitto-dev lmdb-dev libsodium-dev lua5.2-dev \
-    && groupadd -g $EUID appuser \
-    && useradd -r -u $EUID -s "/bin/sh" -g appuser appuser \
-    && mkdir -p /usr/local/source \
-    && cd /usr/local/source \
-    && wget https://github.com/owntracks/recorder/archive/$VERSION.tar.gz \
-    && tar xzf $VERSION.tar.gz \
-    && cd recorder-$VERSION \
-    && mv /config.mk ./ \
-    && make \
-    && make install \
-    && cd / \
-    && chmod 755 /entrypoint.sh \
-    && rm -rf /usr/local/source \
-    && chmod 755 /usr/local/sbin/recorder-health.sh \
-    && apk del .build-deps
 RUN apk add --no-cache \
-	curl jq
+        make \
+        gcc \
+        git \
+        shadow \
+        musl-dev \
+        curl-dev \
+        libconfig-dev \
+        mosquitto-dev \
+        lmdb-dev \
+        libsodium-dev \
+        lua5.2-dev
+
+RUN git clone --branch=${RECORDER_VERSION} https://github.com/owntracks/recorder /src/recorder
+WORKDIR /src/recorder
+
+COPY config.mk .
+RUN make -j $(nprocs)
+RUN make install DESTDIR=/app
+
+FROM alpine:3.15
 
 VOLUME ["/store", "/config"]
 
+RUN apk add --no-cache \
+	curl \
+    jq \
+    libcurl \
+    libconfig \
+    mosquitto \
+    lmdb \
+    libsodium \
+    lua5.2
+
 COPY recorder.conf /config/recorder.conf
 COPY JSON.lua /config/JSON.lua
+COPY --from=builder /app /
+
+COPY recorder-health.sh /usr/sbin/recorder-health.sh
+COPY entrypoint.sh /usr/sbin/entrypoint.sh
+
+RUN chmod +x /usr/sbin/*.sh
 
 # If you absolutely need health-checking, enable the option below.  Keep in
 # mind that until https://github.com/systemd/systemd/issues/6432 is resolved,
 # using the HEALTHCHECK feature will cause systemd to generate a significant
 # amount of spam in the system logs.
-# HEALTHCHECK CMD /usr/local/sbin/recorder-health.sh
+# HEALTHCHECK CMD /usr/sbin/recorder-health.sh
 
 EXPOSE 8083
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENV OTR_CAFILE=/etc/ssl/cert.pem
+ENV OTR_STORAGEDIR=/store
+ENV OTR_TOPIC="owntracks/#"
+
+ENTRYPOINT ["/usr/sbin/entrypoint.sh"]

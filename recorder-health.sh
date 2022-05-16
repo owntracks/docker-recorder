@@ -1,30 +1,29 @@
 #!/bin/sh
 
-addr=`hostname`
-port=8083
+ADDR=`hostname`
+PORT=8083
 
-epoch=$(date +%s)
+EPOCH=$(date +%s)
 
-location=$(cat <<EOJSON
+LOCATION=$(cat <<EOJSON
 {
   "_type": "location",
   "tid": "pp",
   "lat": 51.47879,
   "lon": -0.010677,
-  "tst": $epoch
+  "tst": ${EPOCH}
 }
 EOJSON
 )
 
 # POST location to ping/ping, ignoring output
-curl -sSL --data "${location}" "http://${addr}:${port}/pub?u=ping&d=ping" > /dev/null
+curl -sSL --data "${LOCATION}" "http://${ADDR}:${PORT}/pub?u=ping&d=ping" > /dev/null
 
 # obtain tst of ping/ping's last location
-ret_epoch=$(curl -sSL http://${addr}:${port}/api/0/last --data "user=ping&device=ping" |
-           env jq -r '.[0].tst' )
+RET_EPOCH=$(curl -sSL http://${ADDR}:${PORT}/api/0/last --data "user=ping&device=ping" | env jq -r '.[0].tst' )
 
-if [ $epoch -ne $ret_epoch ]; then
-       echo PANIC $epoch $ret_epoch
+if [ ${EPOCH} -ne ${RET_EPOCH} ]; then
+       echo PANIC ${EPOCH} ${RET_EPOCH}
        exit 1
 else
        echo OK

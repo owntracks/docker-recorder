@@ -1,4 +1,4 @@
-CFLAGS += -g
+CFLAGS += -g -DNS_ENABLE_IPV6
 
 INSTALLDIR = /usr
 
