@@ -86,14 +86,14 @@ automatically. However up on recreation of the docker container, this process
 will be repeated and another unique volume will be created. As a result, the
 container will have forgotten about previous tracks.
 
-## TLS between MQTT Broker and Recorder
+## TLS between MQTT broker and recorder
 
 The `OTR_CAPATH` of the container defaults to the `/config` volume. Thus
 certificates and key files belong into the `/config` volume. `OTR_CAFILE` must be configured for TLS.
 
 `OTR_CERTFILE` defaults to `cert.pem` and `OTR_KEYFILE` to `key.pem`. These files are optional and the options are ignored if the files don't exist.
 
-## TLS encryption via Reverse Proxy
+## TLS encryption via reverse proxy
 
 The Recorder has no encryption module by it self. Instead use a reverse proxy
 setup. See https://github.com/jwilder/nginx-proxy for how to do this in a semi
