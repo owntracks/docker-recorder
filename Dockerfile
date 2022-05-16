@@ -41,14 +41,19 @@ COPY recorder.conf /config/recorder.conf
 COPY JSON.lua /config/JSON.lua
 COPY --from=builder /app /
 
-COPY recorder-health.sh /usr/local/sbin/recorder-health.sh
+COPY recorder-health.sh /usr/sbin/recorder-health.sh
+COPY entrypoint.sh /usr/sbin/entrypoint.sh
 
 # If you absolutely need health-checking, enable the option below.  Keep in
 # mind that until https://github.com/systemd/systemd/issues/6432 is resolved,
 # using the HEALTHCHECK feature will cause systemd to generate a significant
 # amount of spam in the system logs.
-# HEALTHCHECK CMD /usr/local/sbin/recorder-health.sh
+# HEALTHCHECK CMD /usr/sbin/recorder-health.sh
 
 EXPOSE 8083
 
-ENTRYPOINT ["/usr/sbin/ot-recorder"]
+ENV OTR_CAFILE=/etc/ssl/cert.pem
+ENV OTR_STORAGEDIR=/store
+ENV OTR_TOPIC="owntracks/#"
+
+ENTRYPOINT ["/usr/sbin/entrypoint.sh"]
