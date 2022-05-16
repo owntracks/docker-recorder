@@ -16,8 +16,8 @@ RUN apk add --no-cache \
         libsodium-dev \
         lua5.2-dev
 
-RUN git clone --branch=${RECORDER_VERSION} https://github.com/owntracks/recorder
-WORKDIR recorder
+RUN git clone --branch=${RECORDER_VERSION} https://github.com/owntracks/recorder /src/recorder
+WORKDIR /src/recorder
 
 COPY config.mk .
 RUN make -j $(nprocs)
