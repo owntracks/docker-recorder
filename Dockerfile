@@ -54,7 +54,7 @@ RUN chmod +x /usr/sbin/*.sh
 
 EXPOSE 8083
 
-ENV OTR_CAFILE=/etc/ssl/cert.pem
+# ENV OTR_CAFILE=/etc/ssl/cert.pem
 ENV OTR_STORAGEDIR=/store
 ENV OTR_TOPIC="owntracks/#"
 
