@@ -45,6 +45,7 @@ COPY recorder-health.sh /usr/sbin/recorder-health.sh
 COPY entrypoint.sh /usr/sbin/entrypoint.sh
 
 RUN chmod +x /usr/sbin/*.sh
+RUN chmod +r /config/recorder.conf
 
 # If you absolutely need health-checking, enable the option below.  Keep in
 # mind that until https://github.com/systemd/systemd/issues/6432 is resolved,
