@@ -1,6 +1,6 @@
 FROM alpine:3.16 AS builder
 
-ARG RECORDER_VERSION=0.9.0
+ARG RECORDER_VERSION=0.9.1
 # ARG RECORDER_VERSION=master
 
 RUN apk add --no-cache \
@@ -14,7 +14,8 @@ RUN apk add --no-cache \
         mosquitto-dev \
         lmdb-dev \
         libsodium-dev \
-        lua5.2-dev
+        lua5.2-dev \
+	util-linux-dev
 
 RUN git clone --branch=${RECORDER_VERSION} https://github.com/owntracks/recorder /src/recorder
 WORKDIR /src/recorder
@@ -29,13 +30,14 @@ VOLUME ["/store", "/config"]
 
 RUN apk add --no-cache \
 	curl \
-    jq \
-    libcurl \
-    libconfig \
-    mosquitto \
-    lmdb \
-    libsodium \
-    lua5.2
+	jq \
+	libcurl \
+	libconfig \
+	mosquitto \
+	lmdb \
+	libsodium \
+	lua5.2 \
+	util-linux
 
 COPY recorder.conf /config/recorder.conf
 COPY JSON.lua /config/JSON.lua

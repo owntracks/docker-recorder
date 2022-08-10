@@ -8,6 +8,9 @@ WITH_MQTT ?= yes
 # Do you want recorder's built-in HTTP REST API?
 WITH_HTTP ?= yes
 
+# Do you want recorder support for shared views? Requires WITH_HTTP
+WITH_TOURS ?= yes
+
 # Do you want to use reverse-geo caching? (Highly recommended)
 WITH_LMDB ?= yes
 
@@ -66,7 +69,11 @@ CONFIGFILE = /config/recorder.conf
 # Optionally specify the path to the Mosquitto libs, include here
 MOSQUITTO_INC = -I/usr/include
 MOSQUITTO_LIB = -L/usr/lib
-MORELIBS = # -lssl
+
+# Debian requires uuid-dev
+# RHEL/CentOS needs libuuid-devel
+MORELIBS += -luuid # -lssl
+
 
 # If WITH_LUA is configured, specify compilation and linkage flags
 # for Lua either manually or using pkg-config. This may require tweaking,
