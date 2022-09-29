@@ -67,8 +67,8 @@ JSON_INDENT ?= no
 CONFIGFILE = /config/recorder.conf
 
 # Optionally specify the path to the Mosquitto libs, include here
-MOSQUITTO_INC = -I/usr/include
-MOSQUITTO_LIB = -L/usr/lib
+MOSQUITTO_CFLAGS = `$(PKG_CONFIG) --cflags libmosquitto`
+MOSQUITTO_LIBS   = `$(PKG_CONFIG) --libs libmosquitto`
 
 # Debian requires uuid-dev
 # RHEL/CentOS needs libuuid-devel

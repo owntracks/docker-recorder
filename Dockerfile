@@ -1,6 +1,6 @@
 FROM alpine:3.16 AS builder
 
-ARG RECORDER_VERSION=0.9.1
+ARG RECORDER_VERSION=0.9.2
 # ARG RECORDER_VERSION=master
 
 RUN apk add --no-cache \
