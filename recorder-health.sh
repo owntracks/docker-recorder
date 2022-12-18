@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ADDR=`hostname`
-PORT=8083
+PORT="${OTR_HTTPPORT:-8083}"
 
 EPOCH=$(date +%s)
 
