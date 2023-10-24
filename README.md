@@ -53,8 +53,7 @@ mkdir config
 docker run -d -p 8083:8083 -v recorder_store:/store -v ./config:/config owntracks/recorder
 ```
 
-Up on starting the recorder, a default `recorder.conf` file will be created if
-none exists. Possible options are documented [here](https://github.com/owntracks/recorder/blob/master/README.md#configuration-file).
+Up on starting the recorder, default `recorder.conf` settings are used if no file exists. Possible options are documented [here](https://github.com/owntracks/recorder/blob/master/README.md#configuration-file).
 
 **Notes:**
 
