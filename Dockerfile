@@ -3,7 +3,7 @@ FROM alpine:3.16 AS builder
 ARG RECORDER_VERSION=0.9.5
 # ARG RECORDER_VERSION=master
 
-ENV DOCKER_RUNING=1
+ENV DOCKER_RUNNING=1
 
 RUN apk add --no-cache \
         make \
@@ -28,7 +28,7 @@ RUN make install DESTDIR=/app
 
 FROM alpine:3.16
 
-ENV DOCKER_RUNING=1
+ENV DOCKER_RUNNING=1
 
 VOLUME ["/store", "/config"]
 
