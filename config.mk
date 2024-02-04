@@ -41,6 +41,9 @@ STORAGEDEFAULT = /store
 # Where should the recorder find its document root (HTTP)?
 DOCROOT = /htdocs
 
+# Where will the recorder find the TZ data file?
+TZDATADB = /usr/share/owntracks/recorder/timezone16.bin
+
 # Define the precision for reverse-geo lookups. The higher
 # the number, the more granular reverse-geo will be:
 #
