@@ -46,7 +46,7 @@ DOCROOT = /htdocs
 WITH_TZ ?= yes
 
 # Where will the recorder find the TZ data file?
-TZDATADB = /usr/share/owntracks/recorder/timezone16.bin
+TZDATADB = /config/timezone16.bin
 
 # Define the precision for reverse-geo lookups. The higher
 # the number, the more granular reverse-geo will be:
