@@ -41,7 +41,10 @@ RUN apk add --no-cache \
 	lmdb \
 	libsodium \
 	lua5.2 \
-	util-linux
+	util-linux \
+	tzdata
+
+ENV TZ="UTC"
 
 COPY recorder.conf /config/recorder.conf
 COPY JSON.lua /config/JSON.lua
