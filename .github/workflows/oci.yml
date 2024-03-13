@@ -1,0 +1,122 @@
+# Stage OCI container images through GitHub Actions (GHA) to GitHub Container Registry (GHCR).
+name: OCI
+
+on:
+  push:
+    tags:
+      - '*.*.*'
+  pull_request:
+    branches: [ master ]
+
+  # Produce a nightly image every day at 6 a.m. CEST.
+  schedule:
+    - cron: '0 4 * * *'
+
+  # Allow job to be triggered manually.
+  workflow_dispatch:
+
+# Cancel in-progress jobs when pushing to the same branch.
+concurrency:
+  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+# The name for the produced image at ghcr.io.
+env:
+  IMAGE_NAME: "${{ github.repository }}"
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Acquire sources
+        uses: actions/checkout@v3
+
+      - name: Run tests
+        run: |
+          docker-compose build
+          docker-compose up -d
+          docker-compose down
+        
+          docker-compose -f docker-compose-mqtt.yml up -d
+          docker-compose -f docker-compose-mqtt.yml down
+
+  oci:
+    needs: build_and_test
+    runs-on: ubuntu-latest
+
+    permissions:
+        packages: write
+        contents: read
+
+    steps:
+      - name: Acquire sources
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Define image name and tags
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          # List of OCI images to use as base name for tags
+          images: |
+            ghcr.io/${{ env.IMAGE_NAME }}
+          # Generate OCI image tags based on the following events/attributes
+          tags: |
+            type=schedule,pattern=nightly
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+
+      - name: Inspect metadata
+        run: |
+          echo "Tags:      ${{ steps.meta.outputs.tags }}"
+          echo "Labels:    ${{ steps.meta.outputs.labels }}"
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Inspect builder
+        run: |
+          echo "Name:      ${{ steps.buildx.outputs.name }}"
+          echo "Endpoint:  ${{ steps.buildx.outputs.endpoint }}"
+          echo "Status:    ${{ steps.buildx.outputs.status }}"
+          echo "Flags:     ${{ steps.buildx.outputs.flags }}"
+          echo "Platforms: ${{ steps.buildx.outputs.platforms }}"
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}
+
+      #- name: Log in to Docker Hub
+      #  uses: docker/login-action@v2
+      #  with:
+      #    username: ${{ secrets.DOCKER_USERNAME }}
+      #    password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push image
+        if: ${{ !contains(github.actor, 'dependabot') }}
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-to: type=gha,mode=max
+          cache-from: type=gha
+          push: true
+
+      - name: Display git status
+        run: |
+          set -x
+          git describe --tags --always
+          git status
