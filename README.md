@@ -336,6 +336,15 @@ cafile /etc/letsencrypt/live/mqtt.domain.com/chain.pem
 keyfile /etc/letsencrypt/live/mqtt.domain.com/key.pem 
 ```
 
+ 
+## Healthcheck
+
+The Recorder container can perform a Docker-style `HEALTHCHECK` on itself by
+periodically running `recorder-health.sh` on itself if enabled during build.
+This program POSTS a `_type: location` JSON message to itself over HTTP to the
+ping-ping endpoint and verifies via the HTTP API whether the message was
+received.
+
 ## Possible enhancements
 
 - Maybe put the most common Mosquitto options in the section which uses an MQTT broker in the docker-compose file
