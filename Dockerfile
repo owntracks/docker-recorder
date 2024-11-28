@@ -58,10 +58,13 @@ RUN chmod +x /usr/sbin/*.sh
 RUN chmod +r /config/recorder.conf
 RUN chmod 444 /config/timezone16.bin
 
-# If you absolutely need health-checking, enable the option below.  Keep in
-# mind that until https://github.com/systemd/systemd/issues/6432 is resolved,
-# using the HEALTHCHECK feature will cause systemd to generate a significant
-# amount of spam in the system logs.
+# If you need health-checking, enable the option below.  If you are running
+# systemd version 253 or newer, make sure to configure LogFilterPatterns to
+# filter out the healthchecks from the system logs.
+# https://www.freedesktop.org/software/systemd/man/latest/systemd.exec.html#LogFilterPatterns=
+# If you are running systemd version 252 or older, keep in mind that using the
+# HEALTHCHECK feature will cause systemd to generate a significant amount of
+# spam in the system logs.
 # HEALTHCHECK CMD /usr/sbin/recorder-health.sh
 
 EXPOSE 8083
