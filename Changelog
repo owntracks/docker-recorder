@@ -1,3 +1,7 @@
+
+- document healthcheck is build-time option (Dockerfile)
+- entrypoint uses $OTR_TOPICS if defined, with fallback to $OTR_TOPIC (#86)
+
 2024-10-25 version 0.9.9
 - bump for OwnTracks Recorder 0.9.9
 - Allow passing CLI args to recorder (#82)
