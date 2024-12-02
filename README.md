@@ -135,8 +135,6 @@ variables see
 An example might look like:
 
 ```yaml
-version: '3'
-
 services:
 
   otrecorder:
@@ -147,9 +145,9 @@ services:
       - store:/store
     restart: unless-stopped
     environment:
-      - OTR_HOST = "mqtt_broker"
-      - OTR_USER = "user"
-      - OTR_PASS = "pass"
+      OTR_HOST: "mqtt_broker"
+      OTR_USER: "user"
+      OTR_PASS: "pass"
 
 volumes:
   store:
@@ -161,8 +159,6 @@ If you need to set up an MQTT broker, you can easily use, say, Mosquitto. There 
 containers available on docker hub. To use `eclipse-mosquitto` add something like [the following](docker-compose-mqtt.yml) to your `docker-compose.yml` file.
 
 ```yaml
-version: '3'
-
 services:
 
   otrecorder:
