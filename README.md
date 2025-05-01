@@ -60,8 +60,6 @@ Up on starting the recorder, default `recorder.conf` settings are used if no fil
 - The value of `OTR_HOST` is as seen from the container. Thus `localhost` refers to
 the container not the host and should likely not be used.
 - Environment variables, overwrite the `recorder.conf` file options.
-- The shell like style of the`recorder.conf` file needs `""` encapsulated
-variable values.
 
 ## Storing data
 
