@@ -10,6 +10,8 @@ services:
     restart: unless-stopped
     environment:
       OTR_HOST: mosquitto
+    depends_on:
+      - mosquitto
 
   mosquitto:
     image: eclipse-mosquitto
@@ -20,6 +22,9 @@ services:
       - mosquitto-data:/mosquitto/data
       - mosquitto-logs:/mosquitto/logs
       - mosquitto-conf:/mosquitto/config
+    # Use the built-in example config to accept connections from otrecorder.
+    # Replace this config with your own to accept connections from mobile clients.
+    command: mosquitto -c /mosquitto-no-auth.conf
     restart: unless-stopped
 
 volumes:
