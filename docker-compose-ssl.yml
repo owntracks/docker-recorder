@@ -44,8 +44,8 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Berlin
-      - OTR_USER="user"
-      - OTR_PASS="password"
+      - OTR_USER=user
+      - OTR_PASS=password
       - OTR_HOST=mqtt.domain.com
       - OTR_PORT=8883
       - OTR_CAFILE=/config/ca.pem
