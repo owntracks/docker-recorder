@@ -1,4 +1,7 @@
 
+2025-08-12 version 1.0.1
+- bump for OwnTracks Recorder 1.0.1
+- fix docker-compose-mqtt.yml (#95)
 - document healthcheck is build-time option (Dockerfile)
 - entrypoint uses $OTR_TOPICS if defined, with fallback to $OTR_TOPIC (#86)
 
