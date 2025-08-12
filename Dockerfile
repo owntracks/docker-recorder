@@ -1,4 +1,4 @@
-FROM alpine:3.21.0 AS builder
+FROM alpine:3.21.3 AS builder
 
 ARG RECORDER_VERSION=1.0.1
 # ARG RECORDER_VERSION=master
@@ -26,7 +26,7 @@ COPY config.mk .
 RUN make -j $(nprocs)
 RUN make install DESTDIR=/app
 
-FROM alpine:3.21.0
+FROM alpine:3.21.3
 
 ENV DOCKER_RUNNING=1
 
