@@ -92,3 +92,12 @@ LUA_LIBS   = `pkg-config --libs lua5.2`
 
 SODIUM_CFLAGS = `pkg-config --cflags libsodium`
 SODIUM_LIBS = `pkg-config --libs libsodium`
+
+LMDB_CFLAGS = `$(PKG_CONFIG) --cflags lmdb`
+LMDB_LIBS   = `$(PKG_CONFIG) --libs lmdb`
+
+LIBCONFIG_CFLAGS = `$(PKG_CONFIG) --cflags libconfig`
+LIBCONFIG_LIBS   = `$(PKG_CONFIG) --libs libconfig`
+
+LIBCURL_CFLAGS = `$(PKG_CONFIG) --cflags libcurl`
+LIBCURL_LIBS   = `$(PKG_CONFIG) --libs libcurl`

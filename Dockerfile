@@ -1,6 +1,6 @@
 FROM alpine:3.21.0 AS builder
 
-ARG RECORDER_VERSION=1.0.1
+ARG RECORDER_VERSION=1.0.2
 # ARG RECORDER_VERSION=master
 
 ENV DOCKER_RUNNING=1
@@ -23,7 +23,7 @@ RUN git clone --branch=${RECORDER_VERSION} https://github.com/owntracks/recorder
 WORKDIR /src/recorder
 
 COPY config.mk .
-RUN make -j $(nprocs)
+RUN make
 RUN make install DESTDIR=/app
 
 FROM alpine:3.21.0
