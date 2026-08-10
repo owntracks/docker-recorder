@@ -13,8 +13,8 @@ services:
     ports:
       - 8083:8083
     volumes:
-      - config:/config
-      - store:/store
+      - './config/recorder.conf:/config/recorder.conf'
+      - 'store:/store'
     restart: unless-stopped
 
 volumes:
