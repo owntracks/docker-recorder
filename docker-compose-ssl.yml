@@ -52,7 +52,7 @@ services:
       #content of the file above from https://gist.github.com/jpmens/211dbe7904a0efd40e2e590066582ae5
       #which is 6 certificates in one file. !!!This turns out to be important!!!
     volumes:
-      - ./owntracks/config:/config
+      - ./owntracks/config/recorder.conf:/config/recorder.conf
       - ./owntracks/store:/store
       - ./proxy/certs:/etc/letsencrypt/live:ro #probably this line is not needed
     networks:
